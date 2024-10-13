@@ -93,6 +93,14 @@ def p3_4625_information():
   for event in events:
     print(event.Computer + " " + event.TargetUserName + " " + str(event.TimeCreated));
 
+def ioc_1_event_list():
+  events = get_events("SecurityLog-rev2.xml")
+  event_set = set()
+  for event in events:
+    event_set.add(event.EventID)
+  print("Events:")
+  print(event_set)
+
 ##### Main:
 p1_general_information()
 p2_4624_information()
@@ -101,3 +109,4 @@ p2_4624_counts(False)
 p2_4624_freq_chart("grant.larson")
 p2_4624_freq_chart("matt.edwards")
 p3_4625_information()
+ioc_1_event_list() # 1102 audit log cleared is notable
