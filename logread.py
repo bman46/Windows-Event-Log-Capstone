@@ -59,7 +59,7 @@ def p1_general_information():
 
 def p2_4624_information():
   events = [e for e in get_events("SecurityLog-rev2.xml") if e.EventID == "4624"]
-  print("4624 event count: "+str(len(events)))
+  print("Logged on (4624) event count: "+str(len(events)))
   
 def p2_4624_counts(user: bool):
   if user:
@@ -109,6 +109,10 @@ def ioc_freq_chart(event_id: str):
   plt.title(event_id+" Frequency By Hour")
   plt.savefig('images/'+event_id+'_freq_chart.png', bbox_inches='tight')
 
+def ioc_event_counts(event_id: str):
+  events = [pd.to_datetime(e.TimeCreated) for e in get_events("SecurityLog-rev2.xml") if e.EventID == event_id]
+  print("Count of "+event_id+" is "+str(len(events)))
+
 ##### Main:
 p1_general_information()
 p2_4624_information()
@@ -119,3 +123,4 @@ p2_4624_freq_chart("matt.edwards")
 p3_4625_information()
 for event in ioc_1_event_list(): # 1102 audit log cleared is notable
   ioc_freq_chart(str(event))
+  ioc_event_counts(str(event))
