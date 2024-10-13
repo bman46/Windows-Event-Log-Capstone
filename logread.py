@@ -61,15 +61,22 @@ def p2_4624_information():
   events = [e for e in get_events("SecurityLog-rev2.xml") if e.EventID == "4624"]
   print("4624 event count: "+str(len(events)))
   
-  values, counts = np.unique([e.TargetUserName for e in get_events("SecurityLog-rev2.xml") if e.EventID == "4624" and not re.match(".*\$$", e.TargetUserName)], return_counts=True)
+def p2_4624_counts(user: bool):
+  if user:
+    print("--- Human Account Login Stats ---")
+    values, counts = np.unique([e.TargetUserName for e in get_events("SecurityLog-rev2.xml") if e.EventID == "4624" and not re.match(".*\$$", e.TargetUserName)], return_counts=True)
+  else:
+    print("--- Machine Account Login Stats ---")
+    values, counts = np.unique([e.TargetUserName for e in get_events("SecurityLog-rev2.xml") if e.EventID == "4624" and re.match(".*\$$", e.TargetUserName)], return_counts=True)
   login_counts = []
   for index, value in enumerate(values):
     login_counts.append([value, counts[index]])
   login_counts = sorted(login_counts, key=lambda dup: dup[1], reverse=True)
-  print("User count:"+str(len(login_counts)))
-  print("Top 3 logins (Non Workstation):")
+  print("Account count: "+str(len(login_counts)))
+  print("Top 3 logins:")
   for user, count in login_counts[:3]:
     print(user + " " + str(count))
+  print("-----------------")
 
 def p2_4624_freq_chart():
   events = [pd.to_datetime(e.TimeCreated) for e in get_events("SecurityLog-rev2.xml") if e.EventID == "4624" and e.TargetUserName=="Matt.Edwards"]
@@ -89,5 +96,7 @@ def p3_4625_information():
 ##### Main:
 p1_general_information()
 p2_4624_information()
+p2_4624_counts(True)
+p2_4624_counts(False)
 p2_4624_freq_chart()
 p3_4625_information()
