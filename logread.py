@@ -100,6 +100,14 @@ def ioc_1_event_list():
     event_set.add(event.EventID)
   print("Events:")
   print(event_set)
+  return event_set
+
+def ioc_freq_chart(event_id: str):
+  events = [pd.to_datetime(e.TimeCreated) for e in get_events("SecurityLog-rev2.xml") if e.EventID == event_id]
+  df_events = pd.Series(1, index=events).resample('1h').sum()
+  df_events.plot(kind='bar')
+  plt.title(event_id+" Frequency By Hour")
+  plt.savefig('images/'+event_id+'_freq_chart.png', bbox_inches='tight')
 
 ##### Main:
 p1_general_information()
@@ -109,4 +117,5 @@ p2_4624_counts(False)
 p2_4624_freq_chart("grant.larson")
 p2_4624_freq_chart("matt.edwards")
 p3_4625_information()
-ioc_1_event_list() # 1102 audit log cleared is notable
+for event in ioc_1_event_list(): # 1102 audit log cleared is notable
+  ioc_freq_chart(str(event))
