@@ -121,6 +121,6 @@ p2_4624_counts(False)
 p2_4624_freq_chart("grant.larson")
 p2_4624_freq_chart("matt.edwards")
 p3_4625_information()
-for event in ioc_1_event_list(): # 1102 audit log cleared is notable
+for event in ioc_1_event_list():
   ioc_freq_chart(str(event))
   ioc_event_counts(str(event))
