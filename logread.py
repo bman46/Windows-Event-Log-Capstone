@@ -25,7 +25,7 @@ class win_event:
   @xml_handle_element("EventData", "Data")
   def handle_event_data(self, node):
     if node.attributes["Name"] == "TargetUserName":
-      self.TargetUserName = node.text
+      self.TargetUserName = node.text.lower()
   @xml_handle_element("System", "TimeCreated")
   def handle_time(self, node):
     self.TimeCreated = datetime.strptime(node.attributes["SystemTime"][:26], "%Y-%m-%dT%H:%M:%S.%f")
@@ -78,12 +78,12 @@ def p2_4624_counts(user: bool):
     print(user + " " + str(count))
   print("-----------------")
 
-def p2_4624_freq_chart():
-  events = [pd.to_datetime(e.TimeCreated) for e in get_events("SecurityLog-rev2.xml") if e.EventID == "4624" and e.TargetUserName=="Matt.Edwards"]
+def p2_4624_freq_chart(user: str):
+  events = [pd.to_datetime(e.TimeCreated) for e in get_events("SecurityLog-rev2.xml") if e.EventID == "4624" and e.TargetUserName==user]
   df_events = pd.Series(1, index=events).resample('1h').sum()
   df_events.plot(kind='bar')
-  plt.title("Matt.Edwards Login Frequency By Hour")
-  plt.savefig('images/4624_freq_chart.png', bbox_inches='tight')
+  plt.title(user+" Login Frequency By Hour")
+  plt.savefig('images/4624_freq_chart_'+user+'.png', bbox_inches='tight')
   
 def p3_4625_information():
   events = [e for e in get_events("SecurityLog-rev2.xml") if e.EventID == "4625"]
@@ -98,5 +98,6 @@ p1_general_information()
 p2_4624_information()
 p2_4624_counts(True)
 p2_4624_counts(False)
-p2_4624_freq_chart()
+p2_4624_freq_chart("grant.larson")
+p2_4624_freq_chart("matt.edwards")
 p3_4625_information()
