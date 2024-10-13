@@ -1,4 +1,4 @@
-from bigxml import Parser, xml_handle_element, xml_handle_text
+from bigxml import Parser, xml_handle_element
 from datetime import datetime
 from operator import attrgetter
 import functools
